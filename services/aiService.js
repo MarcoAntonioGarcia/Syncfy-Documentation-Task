@@ -20,6 +20,14 @@ ${logText}
             contents: prompt,
         });
 
+        if (response.usageMetadata) {
+            console.log("\n📊 --- REPORTE DE TOKENS (GEMINI) ---");
+            console.log(`Enviados (Prompt): ${response.usageMetadata.promptTokenCount}`);
+            console.log(`Generados (Respuesta): ${response.usageMetadata.candidatesTokenCount}`);
+            console.log(`TOTAL CONSUMIDO: ${response.usageMetadata.totalTokenCount}`);
+            console.log("-------------------------------------\n");
+        }
+
         return response.text;
     } catch (error) {
         console.error('[AIService] Error interactuando con la API de Gemini:', error.message || error);
