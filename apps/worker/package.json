@@ -1,0 +1,17 @@
+{
+    "name": "@syncfy/worker",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "@syncfy/ai-analyzer": "*",
+        "@syncfy/config": "*",
+        "@syncfy/jira-client": "*",
+        "@syncfy/portal-scraper": "*",
+        "axios": "^1.13.6",
+        "node-cron": "^4.2.1",
+        "playwright": "^1.58.2"
+    }
+}

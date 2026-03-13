@@ -1,5 +1,5 @@
 const { GoogleGenAI } = require('@google/genai');
-const env = require('../config/env');
+const env = require('@syncfy/config');
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI.API_KEY });
 

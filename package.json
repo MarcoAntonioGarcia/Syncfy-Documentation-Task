@@ -1,17 +1,13 @@
 {
-  "name": "syncfy-documentation-task",
+  "name": "syncfy-monorepo",
   "version": "1.0.0",
-  "description": "Node.js automation agent designed to manage Level 1 support. It connects to the Jira API and internal portal to download logs of latency failures (507) or partial pulls (253).",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "private": true,
+  "description": "Node.js automation agent designed to manage Level 1 support. Monorepo architecture.",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "dependencies": {
-    "@google/genai": "^1.43.0",
-    "dotenv": "^17.3.1",
-    "playwright": "^1.58.2"
+    "dotenv": "^17.3.1"
   }
 }

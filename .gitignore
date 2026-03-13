@@ -4,3 +4,17 @@ node_modules/
 _cacache/
 _logs/
 .npm-cache/
+
+# Databases
+mysql_data/
+
+# Environments
+.env*
+apps/api/.env
+apps/frontend/.env
+apps/worker/.env
+
+# Logs and Scratch Files
+apps/worker/logs/
+test-*.js
+patch_db.sql

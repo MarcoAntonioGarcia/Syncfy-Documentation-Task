@@ -1,0 +1,10 @@
+{
+    "name": "@syncfy/portal-scraper",
+    "version": "1.0.0",
+    "main": "index.js",
+    "dependencies": {
+        "@syncfy/config": "*",
+        "@syncfy/utils": "*",
+        "axios": "^1.13.6"
+    }
+}
