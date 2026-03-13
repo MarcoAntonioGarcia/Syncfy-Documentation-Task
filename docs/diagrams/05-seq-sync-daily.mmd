@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant CRON as node-cron
+    participant WRK as Worker
+    participant API as API
+    participant Jira as Jira API
+    participant DB as MySQL
+
+    CRON->>WRK: 23:55 diario
+    WRK->>API: POST /api/stats/sync-daily
+    API->>Jira: searchTickets nuevos hoy
+    Jira->>API: assigned
+    API->>Jira: searchTickets resueltos hoy
+    Jira->>API: closed
+    API->>Jira: searchTickets backlog
+    Jira->>API: totalBacklog
+    API->>DB: upsertDailyStats
+    API->>WRK: assigned closed total_backlog

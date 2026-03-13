@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant U as Usuario
+    participant FE as Frontend
+    participant API as API
+    participant JWT as JWT
+
+    U->>FE: Ingresa test/test
+    FE->>API: POST /api/auth/login
+    API->>API: Validar credenciales
+    API->>JWT: sign 8h
+    API->>FE: token, user
+    FE->>FE: localStorage token
+    FE->>U: Redirect /dashboard

@@ -1,0 +1,55 @@
+flowchart TB
+    START([Syncfy - Flujo de Inicio a Fin])
+
+    subgraph ACCESO["1. ACCESO AL SISTEMA"]
+        A1[Usuario abre localhost:5173]
+        A2[Ingresa test / test]
+        A3[Recibe token JWT]
+        A4[Accede al Dashboard]
+    end
+
+    subgraph TICKETS["2. CONSULTA DE TICKETS"]
+        B1[API consulta Jira]
+        B2[Proyecto SY - Componente DAQ]
+        B3[Tickets 507 253 etc]
+        B4[Se guardan en MySQL]
+    end
+
+    subgraph DETALLE["3. DETALLE DEL TICKET"]
+        C1[Usuario hace clic en ticket]
+        C2[API pide detalle a Jira]
+        C3[Ve descripcion y comentarios]
+    end
+
+    subgraph OPCIONES["4. OPCIONES DEL USUARIO"]
+        D1[Análisis Parcial: Scraping]
+        E1[Histórico: graficas]
+        E2[Database: ver logs]
+    end
+
+    subgraph SCRAPING["5. SCRAPING DETALLE"]
+        S1[Robot Playwright inicia]
+        S2[Login admin.paybook.aws]
+        S3[Navega daq3.paybook.aws]
+        S4[Descarga console.log]
+        S5[Guarda MySQL y disco]
+    end
+
+    subgraph AUTOMATICO["PROCESO AUTOMATICO 23:55"]
+        F1[Worker sincroniza]
+        F2[Jira: nuevos cerrados backlog]
+        F3[historical_stats]
+    end
+
+    START --> A1
+    A1 --> A2 --> A3 --> A4
+    A4 --> B1
+    B1 --> B2 --> B3 --> B4
+    B4 --> C1
+    C1 --> C2 --> C3
+    C3 --> D1
+    C3 --> E1
+    C3 --> E2
+    D1 --> S1 --> S2 --> S3 --> S4 --> S5
+
+    F1 --> F2 --> F3

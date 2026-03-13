@@ -1,0 +1,71 @@
+%% Syncfy Support Automation - Diagrama de Flujo de Arquitectura
+%% Generado según REQ-DIAGRAMA-FLUJO-ARQUITECTURA.md
+
+flowchart TB
+    subgraph USUARIO["👤 Capa de Usuario"]
+        U[Usuario Final]
+        NAV[Navegador Web<br/>localhost:5173]
+    end
+
+    subgraph APPS["🖥️ Capa de Aplicación"]
+        FE[Frontend React + Vite<br/>/login, /dashboard, /historico, /database]
+        API[API Express.js<br/>Puerto 3001]
+        WRK[Worker Node.js<br/>Cron 23:55]
+    end
+
+    subgraph PKGS["📦 Paquetes"]
+        JIRA_PKG[@syncfy/jira-client]
+        PORTAL_PKG[@syncfy/portal-scraper]
+        AI_PKG[@syncfy/ai-analyzer]
+        DB_PKG[@syncfy/database]
+    end
+
+    subgraph INFRA["🗄️ Infraestructura"]
+        MYSQL[(MySQL 8.0<br/>syncfy_triage<br/>:3306)]
+    end
+
+    subgraph EXT["☁️ Sistemas Externos"]
+        JIRA[Jira Cloud<br/>REST API v3<br/>Proyecto SY / DAQ]
+        ADMIN[admin.paybook.aws<br/>Portal SSO/JWT]
+        DAQ[daq3.paybook.aws<br/>Logs Nginx]
+        GEMINI[Google Gemini API<br/>Análisis IA]
+    end
+
+    %% Conexiones Usuario
+    U --> NAV
+    NAV <-->|HTTP| FE
+
+    %% Frontend <-> API
+    FE <-->|REST + JWT| API
+
+    %% API usa paquetes
+    API --> JIRA_PKG
+    API --> DB_PKG
+    JIRA_PKG --> JIRA
+    DB_PKG --> MYSQL
+
+    %% Worker
+    WRK -->|POST /api/stats/sync-daily| API
+
+    %% Scraper (spawn desde API)
+    API -.->|spawn scraper.js| WRK
+
+    %% Scraper híbrido
+    WRK -->|1. Login| ADMIN
+    WRK -->|2. Descarga logs| DAQ
+
+    %% AI (preparado, no invocado)
+    AI_PKG -.->|Futuro| GEMINI
+    PORTAL_PKG -.->|Alternativo HTTP| DAQ
+
+    %% Estilo
+    classDef user fill:#e1f5fe
+    classDef app fill:#fff3e0
+    classDef pkg fill:#f3e5f5
+    classDef infra fill:#e8f5e9
+    classDef ext fill:#fce4ec
+    class U,NAV user
+    class FE,API,WRK app
+    class JIRA_PKG,PORTAL_PKG,AI_PKG,DB_PKG pkg
+    class MYSQL infra
+    class JIRA,ADMIN,DAQ,GEMINI ext

@@ -1,0 +1,43 @@
+flowchart TB
+    subgraph USUARIO["Capa de Usuario"]
+        U[Usuario Final]
+        NAV[Navegador Web localhost:5173]
+    end
+
+    subgraph APPS["Capa de Aplicacion"]
+        FE[Frontend React + Vite]
+        API[API Express.js Puerto 3001]
+        WRK[Worker Node.js Cron 23:55]
+    end
+
+    subgraph PKGS["Paquetes"]
+        JIRA_PKG[jira-client]
+        PORTAL_PKG[portal-scraper]
+        AI_PKG[ai-analyzer]
+        DB_PKG[database]
+    end
+
+    subgraph INFRA["Infraestructura"]
+        MYSQL[(MySQL syncfy_triage :3306)]
+    end
+
+    subgraph EXT["Sistemas Externos"]
+        JIRA[Jira Cloud REST API v3]
+        ADMIN[admin.paybook.aws]
+        DAQ[daq3.paybook.aws]
+        GEMINI[Google Gemini API]
+    end
+
+    U --> NAV
+    NAV <-->|HTTP| FE
+    FE <-->|REST + JWT| API
+    API --> JIRA_PKG
+    API --> DB_PKG
+    JIRA_PKG --> JIRA
+    DB_PKG --> MYSQL
+    WRK -->|POST sync-daily| API
+    API -.->|spawn scraper| WRK
+    WRK -->|Login| ADMIN
+    WRK -->|Descarga logs| DAQ
+    AI_PKG -.->|Futuro| GEMINI
+    PORTAL_PKG -.->|Alternativo| DAQ

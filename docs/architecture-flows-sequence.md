@@ -1,0 +1,136 @@
+# Syncfy — Diagramas de Secuencia
+
+Flujos detallados por caso de uso. Especificación completa en [REQ-DIAGRAMA-FLUJO-ARQUITECTURA.md](./REQ-DIAGRAMA-FLUJO-ARQUITECTURA.md).
+
+---
+
+## 1. Autenticación
+
+![Flujo Autenticación](./diagrams/02-seq-auth.png)
+
+```mermaid
+sequenceDiagram
+    participant U as Usuario
+    participant FE as Frontend
+    participant API as API
+    participant JWT as JWT
+
+    U->>FE: Ingresa test/test
+    FE->>API: POST /api/auth/login
+    API->>API: Validar credenciales
+    API->>JWT: sign({username, role}, 8h)
+    API->>FE: {token, user}
+    FE->>FE: localStorage.setItem('token')
+    FE->>U: Redirect /dashboard
+```
+
+---
+
+## 2. Tickets + Detalle
+
+![Flujo Tickets](./diagrams/03-seq-tickets.png)
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant API as API
+    participant Jira as Jira API
+    participant DB as MySQL
+
+    FE->>API: GET /api/tickets?status=&errorStatus=
+    API->>Jira: searchTickets(JQL)
+    Jira->>API: issues[]
+    API->>DB: insertTicketIgnore() x N
+    API->>DB: getTicketsWithActions()
+    DB->>API: tickets + action_count
+    API->>FE: {count, data}
+
+    Note over FE,DB: Click en ticket
+    FE->>API: GET /api/tickets/:id
+    API->>Jira: getTicketDetails(ticketId)
+    Jira->>API: payload completo (ADF, comments)
+    API->>FE: ticketDetails
+```
+
+---
+
+## 3. Scraping Parcial (Híbrido)
+
+![Flujo Scraping](./diagrams/04-seq-scraping.png)
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant API as API
+    participant SCR as Scraper (Playwright)
+    participant ADMIN as admin.paybook.aws
+    participant DAQ as daq3.paybook.aws
+    participant DB as MySQL
+
+    FE->>API: POST /api/scrape/partial {jobUuid, ticketKey}
+    API->>SCR: spawn node scraper.js
+    API->>FE: 202 {status: processing}
+
+    SCR->>ADMIN: Navega + Login
+    ADMIN->>SCR: Cookie JWT/SSO
+    SCR->>SCR: wait 4s
+    SCR->>DAQ: GET /logs/{jobUuid}/
+    DAQ->>SCR: HTML (subcarpetas)
+    SCR->>DAQ: Navega nivel 1, nivel 2
+    SCR->>DAQ: GET console.log (Cookie)
+    DAQ->>SCR: console.log content
+    SCR->>SCR: Guarda en worker/logs/
+    SCR->>DB: saveJobLog()
+    SCR->>SCR: browser.close()
+```
+
+---
+
+## 4. Sincronización Diaria (Worker Cron)
+
+![Flujo Sync Diario](./diagrams/05-seq-sync-daily.png)
+
+```mermaid
+sequenceDiagram
+    participant CRON as node-cron
+    participant WRK as Worker
+    participant API as API
+    participant Jira as Jira API
+    participant DB as MySQL
+
+    CRON->>WRK: 23:55 diario
+    WRK->>API: POST /api/stats/sync-daily
+    API->>Jira: searchTickets (nuevos hoy)
+    Jira->>API: assigned
+    API->>Jira: searchTickets (resueltos hoy)
+    Jira->>API: closed
+    API->>Jira: searchTickets (backlog activo)
+    Jira->>API: totalBacklog
+    API->>DB: upsertDailyStats()
+    API->>WRK: {assigned, closed, total_backlog}
+```
+
+---
+
+## 5. Histórico + Debug DB
+
+![Flujo Stats y Debug](./diagrams/06-seq-stats-debug.png)
+
+```mermaid
+sequenceDiagram
+    participant FE as Frontend
+    participant API as API
+    participant DB as MySQL
+
+    Note over FE,DB: Vista Histórico
+    FE->>API: GET /api/stats/historical
+    API->>DB: getHistoricalStats() (agregación tickets)
+    DB->>API: stats[]
+    API->>FE: [{date, assigned, closed, totalBacklog}]
+
+    Note over FE,DB: Vista Database
+    FE->>API: GET /api/debug/db (Bearer)
+    API->>DB: SELECT tickets, actions, stats, job_logs
+    DB->>API: dump completo
+    API->>FE: JSON (tabs, modal log)
+```

@@ -18,3 +18,9 @@ apps/worker/.env
 apps/worker/logs/
 test-*.js
 patch_db.sql
+
+# Obsidian vault (not part of Syncfy app)
+Sync-Doc-Auto/
+
+# Build outputs
+target/

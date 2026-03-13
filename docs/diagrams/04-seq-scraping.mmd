@@ -1,0 +1,20 @@
+sequenceDiagram
+    participant FE as Frontend
+    participant API as API
+    participant SCR as Scraper Playwright
+    participant ADMIN as admin.paybook.aws
+    participant DAQ as daq3.paybook.aws
+    participant DB as MySQL
+
+    FE->>API: POST /api/scrape/partial
+    API->>SCR: spawn scraper.js
+    API->>FE: 202 processing
+
+    SCR->>ADMIN: Login
+    ADMIN->>SCR: Cookie JWT
+    SCR->>DAQ: GET /logs/jobUuid
+    DAQ->>SCR: HTML subcarpetas
+    SCR->>DAQ: GET console.log
+    DAQ->>SCR: log content
+    SCR->>DB: saveJobLog
+    SCR->>SCR: browser.close

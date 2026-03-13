@@ -1,0 +1,16 @@
+sequenceDiagram
+    participant FE as Frontend
+    participant API as API
+    participant DB as MySQL
+
+    Note over FE,DB: Vista Historico
+    FE->>API: GET /api/stats/historical
+    API->>DB: getHistoricalStats
+    DB->>API: stats
+    API->>FE: date assigned closed totalBacklog
+
+    Note over FE,DB: Vista Database
+    FE->>API: GET /api/debug/db
+    API->>DB: SELECT todas tablas
+    DB->>API: dump
+    API->>FE: JSON tabs modal

@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant FE as Frontend
+    participant API as API
+    participant Jira as Jira API
+    participant DB as MySQL
+
+    FE->>API: GET /api/tickets
+    API->>Jira: searchTickets JQL
+    Jira->>API: issues
+    API->>DB: insertTicketIgnore
+    API->>DB: getTicketsWithActions
+    DB->>API: tickets + action_count
+    API->>FE: count, data
+
+    Note over FE,DB: Click ticket
+    FE->>API: GET /api/tickets/:id
+    API->>Jira: getTicketDetails
+    Jira->>API: payload ADF comments
+    API->>FE: ticketDetails

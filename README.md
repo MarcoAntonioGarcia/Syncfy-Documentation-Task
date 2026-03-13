@@ -13,6 +13,21 @@ The project is divided into distinct modular applications and packages:
 - **Worker (`apps/worker`)**: A dedicated Node.js process leveraging Playwright and Axios. It provides a hybrid scraping strategy to bypass Nginx security barriers and automatically download `.log` files from internal AWS servers.
 - **Database (`packages/database`)**: A centralized module handling all MySQL interactions for tickets, historical metrics, and downloaded job logs.
 
+### Architecture Diagrams
+
+![Syncfy Architecture](docs/diagrams/01-architecture-flow.png)
+
+**Para presentaciones:** [Flujo completo de inicio a fin](docs/flujo-completo-inicio-fin.md) — Diagrama intuitivo del recorrido del usuario
+
+![Flujo Inicio a Fin](docs/diagrams/07-flujo-completo-inicio-fin.png)
+
+Detailed flow diagrams and sequence diagrams are available in the `docs/` folder:
+
+- **[Flujo Completo (Inicio a Fin)](docs/flujo-completo-inicio-fin.md)** — Diagrama intuitivo para presentar a compañeros
+- **[Architecture Flow](docs/architecture-flow.md)** — High-level component diagram (PNG, SVG, Mermaid)
+- **[Flow Sequences](docs/architecture-flows-sequence.md)** — Sequence diagrams for auth, tickets, scraping, stats sync
+- **[Requirements Spec](docs/REQ-DIAGRAMA-FLUJO-ARQUITECTURA.md)** — Full infrastructure architect specification
+
 ## Setup and Installation
 
 ### Prerequisites
