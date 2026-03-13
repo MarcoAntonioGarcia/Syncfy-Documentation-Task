@@ -7,6 +7,7 @@ const authRoutes = require('./src/routes/auth');
 const ticketRoutes = require('./src/routes/tickets');
 const statsRoutes = require('./src/routes/stats');
 const scrapeRoutes = require('./src/routes/scrape');
+const debugRoutes = require('./src/routes/debug');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -21,6 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/scrape', scrapeRoutes);
+app.use('/api/debug', debugRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {

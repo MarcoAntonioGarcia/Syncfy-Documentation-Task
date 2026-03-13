@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Historico from './pages/Historico';
+import DatabaseViewer from './pages/DatabaseViewer';
 import SidebarLayout from './components/SidebarLayout';
 
 function App() {
@@ -47,6 +48,14 @@ function App() {
         element={isAuthenticated ? (
           <SidebarLayout onLogout={handleLogout}>
             <Historico />
+          </SidebarLayout>
+        ) : <Navigate to="/login" />}
+      />
+      <Route
+        path="/database"
+        element={isAuthenticated ? (
+          <SidebarLayout onLogout={handleLogout}>
+            <DatabaseViewer />
           </SidebarLayout>
         ) : <Navigate to="/login" />}
       />

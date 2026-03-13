@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, LayoutDashboard, BarChart3, LogOut } from 'lucide-react';
+import { Activity, LayoutDashboard, BarChart3, Database, LogOut } from 'lucide-react';
 
 export default function SidebarLayout({ children, onLogout }) {
     const location = useLocation();
@@ -46,6 +46,18 @@ export default function SidebarLayout({ children, onLogout }) {
                     >
                         <BarChart3 size={20} />
                         HISTORIAL
+                    </Link>
+                    <Link
+                        to="/database"
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', borderRadius: '8px',
+                            textDecoration: 'none', fontWeight: '500', transition: 'all 0.2s',
+                            backgroundColor: isCurrent('/database') ? 'rgba(59, 130, 246, 0.15)' : 'transparent',
+                            color: isCurrent('/database') ? '#3b82f6' : 'var(--text-muted)'
+                        }}
+                    >
+                        <Database size={20} />
+                        BASE DE DATOS
                     </Link>
                 </nav>
 
